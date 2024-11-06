@@ -367,12 +367,12 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1.9308758
+  m_Radius: 0.5331612
+  m_Height: 1.9402896
   m_Direction: 1
-  m_Center: {x: 0, y: 0.91860366, z: 0}
+  m_Center: {x: -0.03316116, y: 0.91389674, z: 0.0000000012007281}
 --- !u!114 &540416207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -386,38 +386,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rotationSpeed: 10
-  _groundCheckDistance: 0.1
+  _groundCheckDistance: 0.2
   _groundLayer:
     serializedVersion: 2
     m_Bits: 64
   _animator: {fileID: 0}
---- !u!54 &540416208
-Rigidbody:
+--- !u!143 &540416210
+CharacterController:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 540416202}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0.91, z: 0}
 --- !u!1 &719420380
 GameObject:
   m_ObjectHideFlags: 0
@@ -693,13 +692,13 @@ PrefabInstance:
       addedObject: {fileID: 540416203}
     - targetCorrespondingSourceObject: {fileID: 7793339446223966979, guid: 9650c348af697a345b97687c4ac8f362, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 540416208}
-    - targetCorrespondingSourceObject: {fileID: 7793339446223966979, guid: 9650c348af697a345b97687c4ac8f362, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 540416207}
     - targetCorrespondingSourceObject: {fileID: 7793339446223966979, guid: 9650c348af697a345b97687c4ac8f362, type: 3}
       insertIndex: -1
       addedObject: {fileID: 540416206}
+    - targetCorrespondingSourceObject: {fileID: 7793339446223966979, guid: 9650c348af697a345b97687c4ac8f362, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 540416210}
   m_SourcePrefab: {fileID: 100100000, guid: 9650c348af697a345b97687c4ac8f362, type: 3}
 --- !u!1 &1558933579
 GameObject:
