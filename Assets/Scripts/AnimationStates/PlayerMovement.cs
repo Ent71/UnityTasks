@@ -8,22 +8,16 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour, IMovement
 {
-    [SerializeField] private float _walkSpeed;
-    [SerializeField] private float _runSpeed;
     [SerializeField] private float _rotationSpeed;
-    [SerializeField] private Transform _transform;
-    [SerializeField] private float _rollDuration = 1f;
-    [SerializeField] private float _rollDelay = 0.2f;
-    [SerializeField] private float _rollSpeed = 30f;
-    [SerializeField] private float _jumpForce = 10f;
+    [SerializeField] private float _groundCheckDistance = 0.1f; // Distance to check for the ground
+    [SerializeField] private LayerMask _groundLayer;
+    [SerializeField]private Animator _animator;
+    
+    private Vector3 _jumpVerticalVelocity = Vector3.zero; 
+    private Vector3 _velicityInAir = Vector3.zero; 
 
-    private Animator _animator;
     private Rigidbody _rigidbody;
-    private Vector3 _rollDirection = Vector3.zero;
     private bool _isGrounded = false;
-    private bool _isWalk = false;
-    private bool _isRun = false;
-    private bool _isIdle = true;
 
     private bool _isRoll = false;
 
@@ -33,62 +27,41 @@ public class PlayerMovement : MonoBehaviour, IMovement
         _animator = GetComponent<Animator>();
     }
 
+    private void FixedUpdate()
+    {
+        _rigidbody.velocity += _jumpVerticalVelocity + _velicityInAir;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.TryGetComponent<Ground>(out _))
+        if(!_isGrounded && CheckIfGrounded())
         {
-            _isGrounded = true;
+            SetGrounded();
         }
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        if (collision.gameObject.TryGetComponent<Ground>(out _))
+        if(_isGrounded && !CheckIfGrounded())
         {
-            _isGrounded = false;
+            SetUngrounded();
         }
     }
 
     public void Walk(Vector2 direction)
     {
-        if (_isRoll)
-        {
-            return;
-        }
-        
-        _isWalk = true;
-        _isRun = false;
-        _isIdle = false;
-        SetParams();
-        Move(direction, _walkSpeed);
+        Move(direction, 0.5f);
     }
 
     public void Run(Vector2 direction)
     {
-        if (_isRoll)
-        {
-            return;
-        }
-
-        _isWalk = false;
-        _isRun = true;
-        _isIdle = false;
-        SetParams();
-
-        Move(direction, _runSpeed);
+        Move(direction, 1f);
+        
     }
 
     public void Stay()
     {
-        if (!_isGrounded || _isRoll)
-        {
-            return;
-        }
-
-        _isWalk = false;
-        _isRun = false;
-        _isIdle = true;
-        SetParams();
+        _animator.SetFloat("MoveSpeed", 0f);
     }
 
     public void Roll(Vector2 direction)
@@ -100,8 +73,6 @@ public class PlayerMovement : MonoBehaviour, IMovement
         }
 
         _animator.SetTrigger("Roll");
-        _rollDirection = new Vector3(direction.x, 0, direction.y);
-        StartCoroutine(RollAfterDelay(_rollDelay));
     }
 
     public void Jump()
@@ -110,65 +81,53 @@ public class PlayerMovement : MonoBehaviour, IMovement
         {
             return;
         }
-
-        float _horizontalForce = 0;
-
-        if (_isWalk)
-        {
-            _horizontalForce = _walkSpeed;
-        }
-        if (_isRun)
-        {
-            _horizontalForce = _runSpeed;
-        }
-
+            
+        _jumpVerticalVelocity = _rigidbody.velocity;
+        _jumpVerticalVelocity.y = 0;
+        
         _animator.SetTrigger("JumpStart");
-        _rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
     }
-    private void Move(Vector2 direction, float speed)
+
+    private Vector3 InputToDirection(Vector2 input)
     {
-        Vector3 direction3 = new Vector3(direction.x, 0, direction.y);
-        Quaternion targetRotation = Quaternion.LookRotation(direction3);
+        return new Vector3(input.x, 0, input.y);
+    }
+
+    private void Rotate(Vector3 direction)
+    {
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
-        _rigidbody.velocity = direction3 * speed + new Vector3(0, _rigidbody.velocity.y, 0);
     }
 
-    private void MoveInRoll()
+    private void Move(Vector2 direction, float speedRatio)
     {
-        _rigidbody.velocity = _rollDirection * _rollSpeed;
-    }
+        // Debug.Log($"move: _isGrounded {_isGrounded} velocity: {_rigidbody.velocity} direction: {direction}");
 
-    private void FixedUpdate()
-    {
-        if(_isRoll)
+        if(_isGrounded)
         {
-            MoveInRoll();
+            _animator.SetFloat("MoveSpeed", speedRatio);
+            Rotate(InputToDirection(direction));
+        }
+        else
+        {
+            _velicityInAir = InputToDirection(direction);
         }
     }
 
-    private IEnumerator RollAfterDelay(float delay)
+    private void SetGrounded()
     {
-        yield return new WaitForSeconds(delay);
-        SetInRoll(_rollDuration);
+        _jumpVerticalVelocity = Vector3.zero;
+        _velicityInAir = Vector3.zero;
+        _isGrounded = true;
     }
 
-    private void SetInRoll(float duration)
+    private void SetUngrounded()
     {
-        _isRoll = true;
-
-        StartCoroutine(UnSetInRollAfterDelay(duration));
+        _isGrounded = false;
     }
 
-    private IEnumerator UnSetInRollAfterDelay(float delay)
+    bool CheckIfGrounded()
     {
-        yield return new WaitForSeconds(delay);
-        _isRoll = false;
-    }
-
-    private void SetParams()
-    {
-        _animator.SetBool("IsIdle", _isIdle);
-        _animator.SetBool("IsWalk", _isWalk);
-        _animator.SetBool("IsRun", _isRun);
+        return Physics.Raycast(transform.position, Vector3.down, _groundCheckDistance, _groundLayer);
     }
 }
