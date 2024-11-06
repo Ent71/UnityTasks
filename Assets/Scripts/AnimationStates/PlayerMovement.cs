@@ -1,52 +1,66 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour, IMovement
 {
     [SerializeField] private float _rotationSpeed;
-    [SerializeField] private float _groundCheckDistance = 0.1f; // Distance to check for the ground
+    [SerializeField] private float _groundCheckDistance = 0.1f;
     [SerializeField] private LayerMask _groundLayer;
-    [SerializeField]private Animator _animator;
+    [SerializeField] private Animator _animator;
     
-    private Vector3 _jumpVerticalVelocity = Vector3.zero; 
+    private Vector3 _jumpVerticalVelocity = Vector3.zero;
     private Vector3 _velicityInAir = Vector3.zero; 
 
-    private Rigidbody _rigidbody;
-    private bool _isGrounded = false;
+    // private Rigidbody _rigidbody;
+    private CharacterController _characterController;
+    private bool _isGrounded => CheckIfGrounded();
 
     private bool _isRoll = false;
 
     private void Awake()
     {
-        _rigidbody = GetComponent<Rigidbody>();
+        _characterController = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
-        _rigidbody.velocity += _jumpVerticalVelocity + _velicityInAir;
+        if(!_isGrounded)
+        {
+            // _characterController.Move((_jumpVerticalVelocity + _velicityInAir) * Time.deltaTime);
+        } 
+        // if(!_isGrounded)
+        // {
+        // }
+        // else
+        // {
+        //     _characterController.SimpleMove(Vector3.zero);
+        // }
+        // _characterController.velocity += _jumpVerticalVelocity + _velicityInAir;
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(!_isGrounded && CheckIfGrounded())
-        {
-            SetGrounded();
-        }
-    }
+    // private void OnCollisionEnter(Collision collision)
+    // {
+    //     Debug.Log("OnCollisionEnter");
+    //     if(!_isGrounded && CheckIfGrounded())
+    //     {
+    //         SetGrounded();
+    //     }
+    // }
 
-    private void OnCollisionExit(Collision collision)
-    {
-        if(_isGrounded && !CheckIfGrounded())
-        {
-            SetUngrounded();
-        }
-    }
+    // private void OnCollisionExit(Collision collision)
+    // {
+    //     if(_isGrounded && !CheckIfGrounded())
+    //     {
+    //         SetUngrounded();
+    //     }
+    // }
 
     public void Walk(Vector2 direction)
     {
@@ -56,7 +70,6 @@ public class PlayerMovement : MonoBehaviour, IMovement
     public void Run(Vector2 direction)
     {
         Move(direction, 1f);
-        
     }
 
     public void Stay()
@@ -82,7 +95,7 @@ public class PlayerMovement : MonoBehaviour, IMovement
             return;
         }
             
-        _jumpVerticalVelocity = _rigidbody.velocity;
+        _jumpVerticalVelocity = _characterController.velocity;
         _jumpVerticalVelocity.y = 0;
         
         _animator.SetTrigger("JumpStart");
@@ -101,6 +114,7 @@ public class PlayerMovement : MonoBehaviour, IMovement
 
     private void Move(Vector2 direction, float speedRatio)
     {
+        Debug.Log($"move: _isGrounded {_isGrounded}");
         // Debug.Log($"move: _isGrounded {_isGrounded} velocity: {_rigidbody.velocity} direction: {direction}");
 
         if(_isGrounded)
@@ -114,17 +128,17 @@ public class PlayerMovement : MonoBehaviour, IMovement
         }
     }
 
-    private void SetGrounded()
-    {
-        _jumpVerticalVelocity = Vector3.zero;
-        _velicityInAir = Vector3.zero;
-        _isGrounded = true;
-    }
+    // private void SetGrounded()
+    // {
+    //     _jumpVerticalVelocity = Vector3.zero;
+    //     _velicityInAir = Vector3.zero;
+    //     _isGrounded = true;
+    // }
 
-    private void SetUngrounded()
-    {
-        _isGrounded = false;
-    }
+    // private void SetUngrounded()
+    // {
+    //     _isGrounded = false;
+    // }
 
     bool CheckIfGrounded()
     {
