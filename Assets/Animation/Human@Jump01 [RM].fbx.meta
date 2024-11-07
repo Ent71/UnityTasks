@@ -58,7 +58,21 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0
+        functionName: JumpStart
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: 8c8b7ea7a1546344582b66b4f6ac8377, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.62458587
+        functionName: JumpEnd
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: 8c8b7ea7a1546344582b66b4f6ac8377, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}

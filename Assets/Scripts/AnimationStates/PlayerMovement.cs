@@ -16,7 +16,8 @@ public class PlayerMovement : MonoBehaviour, IMovement
     private Vector3 _jumpVerticalVelocity = Vector3.zero;
     private Vector3 _airVelocity = Vector3.zero; 
     private CharacterController _characterController;
-    private bool _isGrounded => _characterController.isGrounded;
+    private bool _isGrounded = false;
+    private bool _isInJump = false;
 
     private void Awake()
     {
@@ -26,15 +27,22 @@ public class PlayerMovement : MonoBehaviour, IMovement
 
     private void Update()
     {
-        Vector3 velocity;
+        CheckIsGroundedChange();
 
-        if(_animator.GetBool("IsInJump"))
+        Vector3 velocity = Vector3.zero;
+
+        if(!_isGrounded)
         {
-            velocity = _jumpVerticalVelocity + _airVelocity;
+            velocity += _airVelocity;
+        }
+
+        if(_isInJump)
+        {
+            velocity += _jumpVerticalVelocity;
         }
         else
         {
-            velocity = Physics.gravity * Time.deltaTime;
+            velocity += Physics.gravity * Time.deltaTime;
         }
         
         _characterController.Move(velocity * Time.deltaTime);
@@ -95,10 +103,32 @@ public class PlayerMovement : MonoBehaviour, IMovement
         {
             _animator.SetFloat("MoveSpeed", speedRatio);
             Rotate(InputToDirection(direction));
+            _airVelocity = Vector3.zero;
         }
         else
         {
             _airVelocity = InputToDirection(direction) * airSpeed;
         }
+    }
+
+    private void CheckIsGroundedChange()
+    {
+        if(_isGrounded != _characterController.isGrounded)
+        {
+            _isGrounded = _characterController.isGrounded;
+            _animator.SetBool("IsGrounded", _isGrounded);
+        }
+    }
+
+    private void JumpStart()
+    {
+        _isInJump = true;
+        _animator.SetBool("IsInJump", true);
+    }
+    
+    private void JumpEnd()
+    {
+        _isInJump = false;
+        _animator.SetBool("IsInJump", false);
     }
 }
