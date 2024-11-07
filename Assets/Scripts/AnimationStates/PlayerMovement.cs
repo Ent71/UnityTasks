@@ -10,18 +10,13 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour, IMovement
 {
     [SerializeField] private float _rotationSpeed;
-    [SerializeField] private float _groundCheckDistance = 0.1f;
-    [SerializeField] private LayerMask _groundLayer;
-    [SerializeField] private Animator _animator;
+    [SerializeField] private float _airSpeed = 1.7f;
     
+    private Animator _animator;
     private Vector3 _jumpVerticalVelocity = Vector3.zero;
-    private Vector3 _velicityInAir = Vector3.zero; 
-
-    // private Rigidbody _rigidbody;
+    private Vector3 _airVelocity = Vector3.zero; 
     private CharacterController _characterController;
-    private bool _isGrounded => CheckIfGrounded();
-
-    private bool _isRoll = false;
+    private bool _isGrounded => _characterController.isGrounded;
 
     private void Awake()
     {
@@ -31,36 +26,19 @@ public class PlayerMovement : MonoBehaviour, IMovement
 
     private void Update()
     {
-        if(!_isGrounded)
+        Vector3 velocity;
+
+        if(_animator.GetBool("IsInJump"))
         {
-            // _characterController.Move((_jumpVerticalVelocity + _velicityInAir) * Time.deltaTime);
-        } 
-        // if(!_isGrounded)
-        // {
-        // }
-        // else
-        // {
-        //     _characterController.SimpleMove(Vector3.zero);
-        // }
-        // _characterController.velocity += _jumpVerticalVelocity + _velicityInAir;
+            velocity = _jumpVerticalVelocity + _airVelocity;
+        }
+        else
+        {
+            velocity = Physics.gravity * Time.deltaTime;
+        }
+        
+        _characterController.Move(velocity * Time.deltaTime);
     }
-
-    // private void OnCollisionEnter(Collision collision)
-    // {
-    //     Debug.Log("OnCollisionEnter");
-    //     if(!_isGrounded && CheckIfGrounded())
-    //     {
-    //         SetGrounded();
-    //     }
-    // }
-
-    // private void OnCollisionExit(Collision collision)
-    // {
-    //     if(_isGrounded && !CheckIfGrounded())
-    //     {
-    //         SetUngrounded();
-    //     }
-    // }
 
     public void Walk(Vector2 direction)
     {
@@ -79,9 +57,8 @@ public class PlayerMovement : MonoBehaviour, IMovement
 
     public void Roll(Vector2 direction)
     {
-        if (!_isGrounded || _isRoll || direction == Vector2.zero)
+        if (!_isGrounded || direction == Vector2.zero)
         {
-            Debug.Log("Canceled roll");
             return;
         }
 
@@ -90,7 +67,7 @@ public class PlayerMovement : MonoBehaviour, IMovement
 
     public void Jump()
     {
-        if (!_isGrounded || _isRoll)
+        if (!_isGrounded)
         {
             return;
         }
@@ -114,9 +91,6 @@ public class PlayerMovement : MonoBehaviour, IMovement
 
     private void Move(Vector2 direction, float speedRatio)
     {
-        Debug.Log($"move: _isGrounded {_isGrounded}");
-        // Debug.Log($"move: _isGrounded {_isGrounded} velocity: {_rigidbody.velocity} direction: {direction}");
-
         if(_isGrounded)
         {
             _animator.SetFloat("MoveSpeed", speedRatio);
@@ -124,24 +98,7 @@ public class PlayerMovement : MonoBehaviour, IMovement
         }
         else
         {
-            _velicityInAir = InputToDirection(direction);
+            _airVelocity = InputToDirection(direction) * _airSpeed;
         }
-    }
-
-    // private void SetGrounded()
-    // {
-    //     _jumpVerticalVelocity = Vector3.zero;
-    //     _velicityInAir = Vector3.zero;
-    //     _isGrounded = true;
-    // }
-
-    // private void SetUngrounded()
-    // {
-    //     _isGrounded = false;
-    // }
-
-    bool CheckIfGrounded()
-    {
-        return Physics.Raycast(transform.position, Vector3.down, _groundCheckDistance, _groundLayer);
     }
 }
