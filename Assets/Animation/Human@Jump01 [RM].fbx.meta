@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a32e09bfd110b9f47aca50f1f8bdd882
+guid: 8f7abf9e0b41f4103873280efd83dcd1
 labels:
 - Animation
 ModelImporter:
@@ -35,7 +35,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Human@Jump02
+      name: Human@Jump01 [RM]
       takeName: Untitled
       internalID: 3094330708855449807
       firstFrame: 0
@@ -51,39 +51,28 @@ ModelImporter:
       loopBlendOrientation: 1
       loopBlendPositionY: 0
       loopBlendPositionXZ: 1
-      keepOriginalOrientation: 1
+      keepOriginalOrientation: 0
       keepOriginalPositionY: 0
       keepOriginalPositionXZ: 1
       heightFromFeet: 1
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves:
-      - name: GravityWeight
-        curve:
-          serializedVersion: 2
-          curve:
-          - serializedVersion: 3
-            time: -0.028404236
-            value: 0.94174194
-            inSlope: 0.056648985
-            outSlope: 0.056648985
-            tangentMode: 34
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0.33333334
-          - serializedVersion: 3
-            time: 1
-            value: 1
-            inSlope: 0.056648985
-            outSlope: 0.056648985
-            tangentMode: 34
-            weightedMode: 0
-            inWeight: 0.33333334
-            outWeight: 0
-          preInfinity: 2
-          postInfinity: 2
-          rotationOrder: 4
-      events: []
+      curves: []
+      events:
+      - time: 0
+        functionName: JumpStart
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: 8c8b7ea7a1546344582b66b4f6ac8377, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.62458587
+        functionName: JumpEnd
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: 8c8b7ea7a1546344582b66b4f6ac8377, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
