@@ -386,10 +386,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rotationSpeed: 10
-  _groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  _animator: {fileID: 0}
+  _airSpeed: 3
 --- !u!143 &540416210
 CharacterController:
   m_ObjectHideFlags: 0
@@ -636,7 +633,7 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 32aa535137d59014c94b269521114c86, type: 2}
     - target: {fileID: 7528000098360314118, guid: 9650c348af697a345b97687c4ac8f362, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.49
+      value: 1.47
       objectReference: {fileID: 0}
     - target: {fileID: 7528000098360314118, guid: 9650c348af697a345b97687c4ac8f362, type: 3}
       propertyPath: m_LocalPosition.y
@@ -644,7 +641,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7528000098360314118, guid: 9650c348af697a345b97687c4ac8f362, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.88
+      value: 3.11
       objectReference: {fileID: 0}
     - target: {fileID: 7528000098360314118, guid: 9650c348af697a345b97687c4ac8f362, type: 3}
       propertyPath: m_LocalRotation.w
