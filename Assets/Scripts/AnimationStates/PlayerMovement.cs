@@ -9,8 +9,8 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour, IMovement
 {
-    [SerializeField] private float _rotationSpeed;
-    [SerializeField] private float _airSpeed = 1.7f;
+    [SerializeField] private float rotationSpeed;
+    [SerializeField] private float airSpeed = 1.7f;
     
     private Animator _animator;
     private Vector3 _jumpVerticalVelocity = Vector3.zero;
@@ -86,7 +86,7 @@ public class PlayerMovement : MonoBehaviour, IMovement
     private void Rotate(Vector3 direction)
     {
         Quaternion targetRotation = Quaternion.LookRotation(direction);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
 
     private void Move(Vector2 direction, float speedRatio)
@@ -98,7 +98,7 @@ public class PlayerMovement : MonoBehaviour, IMovement
         }
         else
         {
-            _airVelocity = InputToDirection(direction) * _airSpeed;
+            _airVelocity = InputToDirection(direction) * airSpeed;
         }
     }
 }
